@@ -1,0 +1,90 @@
+{
+  "schema_version": "0.1",
+  "purpose": "ATHENA 内部逻辑、安全和可用性回归，不代表真实受试者证据",
+  "runtime": "http://127.0.0.1:8775/",
+  "personas": [
+    {
+      "id": "P01",
+      "label": "前篮球运动员·谨慎回归",
+      "synthetic_profile": {
+        "age_band": "30-39",
+        "sport": "球类",
+        "sport_detail": "篮球",
+        "retirement_stage": "1-3",
+        "body_focus": "knee-leg",
+        "goal": "move-safely",
+        "today_feel": "tired"
+      },
+      "path": [
+        "运动员档案：篮球 + 膝盖/腿部 + 安全活动",
+        "首页互动：有点累 → 安全活动",
+        "进入任务页"
+      ],
+      "expected": [
+        "原地活动一下排在前面",
+        "站起来，再坐下不可作为默认候选",
+        "每个任务显示推荐理由",
+        "控制台无错误"
+      ]
+    },
+    {
+      "id": "P02",
+      "label": "前游泳运动员·忙碌工作日",
+      "synthetic_profile": {
+        "age_band": "40-49",
+        "sport": "游泳/水上运动",
+        "retirement_stage": "5+",
+        "body_focus": "unknown",
+        "goal": "workday-energy",
+        "today_feel": "steady"
+      },
+      "path": [
+        "首页：30 秒，找到今天第一步",
+        "还可以 → 工作日有精神",
+        "进入任务页"
+      ],
+      "expected": [
+        "不填写完整档案也能完成首次互动",
+        "推荐理由使用工作日语境",
+        "首次路径不超过 30 秒级别的操作负担",
+        "刷新后会话仍然存在"
+      ]
+    },
+    {
+      "id": "P03",
+      "label": "前力量项目运动员·安全优先",
+      "synthetic_profile": {
+        "age_band": "30-39",
+        "sport": "力量/举重",
+        "retirement_stage": "3-5",
+        "body_focus": "unknown",
+        "goal": "understand-body",
+        "today_feel": "unsure",
+        "safety_scenario": "new_chest_discomfort"
+      },
+      "path": [
+        "今日状态：我想先检查一下",
+        "身体检查：胸口不舒服",
+        "开始 3 分钟轻松活动"
+      ],
+      "expected": [
+        "显示先停一下",
+        "显示先联系专业人员",
+        "显示暂不继续",
+        "不进入可以继续或加量状态"
+      ]
+    }
+  ],
+  "recording_fields": [
+    "scenario_id",
+    "step_name",
+    "expected_state",
+    "observed_state",
+    "time_to_next_action_seconds",
+    "reason_understood",
+    "privacy_understood",
+    "safety_gate_result",
+    "console_error_count",
+    "notes"
+  ]
+}

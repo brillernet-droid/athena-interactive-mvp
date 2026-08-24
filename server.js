@@ -117,7 +117,7 @@ const server = http.createServer(async (req, res) => {
   const db = readDb();
 
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' });
+    res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' });
     res.end(); return;
   }
 
@@ -142,6 +142,15 @@ const server = http.createServer(async (req, res) => {
       } catch (error) {
         sendJson(res, 400, { error: error.message });
       }
+      return;
+    }
+    if (req.method === 'DELETE') {
+      delete db.sessions[id];
+      const replacementId = crypto.randomUUID();
+      db.sessions[replacementId] = defaultSession();
+      writeDb(db);
+      res.setHeader('Set-Cookie', `athena_session=${replacementId}; Path=/; SameSite=Lax; Max-Age=31536000`);
+      sendJson(res, 200, { deleted: true, sessionId: replacementId, ...db.sessions[replacementId] });
       return;
     }
   }
