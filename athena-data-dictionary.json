@@ -12,6 +12,7 @@
     ],
     "athlete_profile": [
       "sport_category",
+      "sport_detail_optional",
       "retirement_stage",
       "body_focus_area_self_report",
       "primary_goal",
