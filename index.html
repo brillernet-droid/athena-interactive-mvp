@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ATHENA · 行为数字孪生运动干预原型</title>
+  <title>ATHENA · 退役运动员日常活动助手</title>
   <style>
     :root {
       --bg: #f4f7fb;
@@ -129,6 +129,9 @@
     .athlete-stat { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.13); border-radius:12px; padding:12px; }
     .athlete-stat .label { color:#b7d5e0; font-size:11px; }
     .athlete-stat .value { margin-top:5px; font-weight:800; font-size:18px; }
+    .athlete-next { display:flex; align-items:flex-start; gap:10px; margin-top:16px; padding:12px 14px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.15); border-radius:12px; line-height:1.5; }
+    .athlete-next .label { color:#b7d5e0; font-size:12px; white-space:nowrap; }
+    .athlete-next strong { font-size:14px; font-weight:700; }
     .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
     .profile-field { display:grid; gap:7px; }
     .profile-field label { color:var(--muted); font-size:13px; }
@@ -176,12 +179,13 @@
           <div class="eyebrow">给退役运动员的今天</div>
           <h2 style="color:#fff;margin-bottom:7px" id="athlete-greeting">把过去的训练习惯，慢慢带回日常</h2>
           <p class="muted" style="margin-bottom:0" id="athlete-summary">这里会记住你的运动经历，但今天怎么动，还是以你现在的感觉为准。</p>
-          <div class="athlete-strip"><div class="athlete-stat"><div class="label">过去练什么</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">离开系统训练</div><div class="value" id="athlete-stage-stat">1–3 年</div></div><div class="athlete-stat"><div class="label">最近哪里不舒服</div><div class="value" id="athlete-injury-stat">暂不设置</div></div><div class="athlete-stat"><div class="label">每周活动差距</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
+          <div class="athlete-strip"><div class="athlete-stat"><div class="label">过去练什么</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">离开系统训练</div><div class="value" id="athlete-stage-stat">1–3 年</div></div><div class="athlete-stat"><div class="label">最近哪里不舒服</div><div class="value" id="athlete-injury-stat">暂不设置</div></div><div class="athlete-stat"><div class="label">过去多运动多少</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
+          <div class="athlete-next"><span class="label">今天可以先</span><strong id="athlete-today-tip">把一次起身当作热身，不追求强度。</strong></div>
         </div>
         <div class="grid two">
           <div class="card">
             <div class="section-head"><div><div class="eyebrow">今天的状态</div><h2>你现在感觉怎么样？</h2><p>调一调下面几项，给今天的提醒一个大概的起点。</p></div><div class="research-code">仅供演示</div></div>
-            <div class="metric-row"><div><div class="metric" id="readiness-value">78<small>/100</small></div><div class="muted" id="readiness-label">适合低负荷微活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">78</strong><span>今天</span></div><div class="caption">仅作今天的参考</div></div></div>
+            <div class="metric-row"><div><div class="metric" id="readiness-value">慢一点</div><div class="muted" id="readiness-label">先选轻一点的活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">慢</strong><span>今天</span></div><div class="caption">仅作今天的参考</div></div></div>
             <div class="range-row"><label for="resting-hr">静息心率（可选）</label><input id="resting-hr" type="range" min="45" max="100" value="62"><output id="resting-hr-out">62 bpm</output></div>
             <div class="range-row"><label for="fatigue">疲劳感</label><input id="fatigue" type="range" min="0" max="10" value="3"><output id="fatigue-out">3 / 10</output></div>
             <div class="range-row"><label for="pain">疼痛/不适</label><input id="pain" type="range" min="0" max="10" value="1"><output id="pain-out">1 / 10</output></div>
@@ -297,6 +301,7 @@
       const normalizeFocusArea = (value) => ({'左膝/下肢':'knee-leg','踝足':'ankle-foot','腰背':'back','肩肘/上肢':'shoulder-arm','头部/脑震荡史':'head','无明确限制':'none'}[value] || value || 'unknown');
       const focusAreaLabel = (value) => ({unknown:'暂不设置',none:'没有特别需要避开的部位','knee-leg':'膝盖/腿部','hip-pelvis':'髋部/骨盆','ankle-foot':'脚踝/足部',back:'腰背',neck:'颈部','shoulder-arm':'肩膀/手臂','wrist-hand':'手腕/手部',head:'头部撞击/脑震荡经历',multi:'多个部位',other:'其他部位'}[normalizeFocusArea(value)] || value);
       const goalLabel = (goal) => ({'break-sitting':'减少久坐，及时起身','find-rhythm':'找回规律的生活节奏','move-safely':'在不适或旧伤限制下安全活动','rebuild-capacity':'逐步找回力量和活动能力','workday-energy':'改善工作日精力','sleep-recovery':'改善睡眠与恢复','social-team':'重新建立社交或团队节奏','understand-body':'先了解身体，再决定动多少',uncertain:'还不确定'}[goal] || '先了解身体，再决定动多少');
+      const goalTip = (goal) => ({'break-sitting':'把第一次起身当作热身，走两分钟就够了。','find-rhythm':'先固定一个你愿意坚持的两分钟活动时间。','move-safely':'先做原地、轻松、随时可以停下来的动作。','rebuild-capacity':'先完成一小段恢复，不追求回到以前的强度。','workday-energy':'工作间隙先站起来，让身体换个姿势。','sleep-recovery':'白天先做一点轻松活动，不用把自己练累。','social-team':'把一次起身当作训练间歇，慢慢找回节奏。','understand-body':'先听听身体的反馈，再决定今天做多少。',uncertain:'先听听身体的反馈，再决定今天做多少。'}[goal] || '把第一次起身当作热身，走两分钟就够了。');
       const updateProfileOutputs = () => { $('role-profile-out').textContent=$('role-profile').value+' / 10'; $('past-training-out').textContent=$('past-training').value+' h / 周'; $('current-activity-out').textContent=$('current-activity').value+' h / 周'; };
       const fillProfileInputs = () => { const a=state.athlete; a.sport=normalizeSport(a.sport); a.injury=normalizeFocusArea(a.injury); a.stage=normalizeStage(a.stage); a.goal=a.goal || 'break-sitting'; $('sport-profile').value=a.sport; $('stage-profile').value=a.stage; $('sport-detail').value=a.sportDetail || ''; $('injury-profile').value=a.injury; $('goal-profile').value=a.goal; $('role-profile').value=a.roleImportance; $('past-training').value=a.pastTraining; $('current-activity').value=a.currentActivity; updateProfileOutputs(); };
       const updateAthleteSummary = () => {
@@ -304,6 +309,7 @@
         $('athlete-sport-stat').textContent=sportLabel; $('athlete-stage-stat').textContent=stageLabel(a.stage); $('athlete-injury-stat').textContent=focus; $('athlete-gap-stat').textContent=gap+' h / 周';
         $('athlete-greeting').textContent = a.sport==='耐力/户外' ? '以前常做耐力运动，今天先把节奏放回生活里' : a.sport==='力量/举重' ? '以前习惯高强度，今天先按现在的感觉来' : '把过去的训练习惯，慢慢带回日常';
         $('athlete-summary').textContent = `你以前练${sportLabel}，已经离开系统训练 ${stageLabel(a.stage)}。今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'身体关注区域还没有填写。':`最近你提到“${focus}”需要少一点负担。`} 今天怎么动，以你现在的感觉为准。`;
+        $('athlete-today-tip').textContent = goalTip(a.goal);
         $('athlete-mode-alert').textContent = `你以前练${sportLabel}，已离开系统训练 ${stageLabel(a.stage)}；今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'你还没有填写身体关注区域，我们先从轻松的动作开始。':`你提到“${focus}”需要少一点负担，我们会先避开不合适的选择。`} 不会因为你曾经是运动员，就让今天的动作变得更难。`;
       };
       const applyTaskGuardrails = () => {
@@ -318,9 +324,9 @@
         if (red) score = Math.min(score, 20); if (!state.testCompleted) score -= 4; return Math.max(0, Math.min(100, score));
       };
       const updateReadiness = () => {
-        const score = readiness(); $('readiness-value').innerHTML = score + '<small>/100</small>'; $('ring-value').textContent=score; $('readiness-ring').style.setProperty('--readiness', score+'%');
+        const score = readiness(); const pace = score >= 70 ? '可以照常' : score >= 45 ? '慢一点' : '先停一下'; const ring = score >= 70 ? '行' : score >= 45 ? '慢' : '停'; $('readiness-value').textContent=pace; $('ring-value').textContent=ring; $('readiness-ring').style.setProperty('--readiness', score+'%');
         $('fatigue-out').textContent=$('fatigue').value+' / 10'; $('pain-out').textContent=$('pain').value+' / 10'; $('resting-hr-out').textContent=$('resting-hr').value+' bpm';
-        const label = score >= 70 ? '适合低负荷微活动' : score >= 45 ? '今天可以少一点、慢一点' : '先停一下，看看是否需要帮助'; $('readiness-label').textContent=label;
+        const label = score >= 70 ? '适合轻松活动' : score >= 45 ? '今天可以少一点、慢一点' : '先停一下，看看是否需要帮助'; $('readiness-label').textContent=label;
         const hasSymptom = Object.values(state.symptoms).some(Boolean); $('system-status').textContent = hasSymptom ? '先停下来，做个检查' : score < 45 ? '今天先缓一缓' : score < 70 ? '今天可以慢一点' : '今天可以按自己的节奏来'; $('system-dot').style.background = score < 45 ? 'var(--red)' : score < 70 ? 'var(--amber)' : 'var(--green)';
         const risk = $('decision-alert'); if (hasSymptom || score < 45) { risk.className='alert red'; risk.textContent='先不要继续自测。停下来，如果不舒服或拿不准，请联系专业人员。'; } else if(score < 70) { risk.className='alert amber'; risk.textContent='今天先选短一点、轻一点、随时能停下来的活动。'; } else { risk.className='alert green'; risk.textContent='现在不用急着动。你可以继续工作，也可以自己先做个检查。'; }
       };
