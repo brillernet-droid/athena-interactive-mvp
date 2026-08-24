@@ -71,10 +71,9 @@
     .btn.danger { background: #fff0f0; border-color: #f1c8c8; color: var(--red); }
     .btn:disabled { opacity: .48; cursor: not-allowed; }
     .hero-actions { display:flex; align-items:center; justify-content:space-between; gap: 14px; border-top: 1px solid var(--line); margin-top: 20px; padding-top: 18px; }
-    .readiness-ring { width: 126px; height:126px; border-radius: 50%; display:grid; place-items:center; background: conic-gradient(var(--cyan) var(--readiness, 78%), #e9f0f4 0); position:relative; }
-    .readiness-ring::after { content:""; position:absolute; inset:10px; border-radius:50%; background:var(--surface); }
-    .readiness-ring strong { position:relative; z-index:1; font-size:30px; letter-spacing:-.06em; }
-    .readiness-ring span { position:relative; z-index:1; font-size:11px; color:var(--muted); margin-top:-28px; }
+    .pace-tile { width:100px; height:100px; border-radius:20px; display:grid; place-items:center; align-content:center; gap:3px; background:#eef7f6; border:1px solid #cbe8e4; position:relative; }
+    .pace-tile strong { font-size:27px; letter-spacing:-.06em; color:#176d73; }
+    .pace-tile span { font-size:11px; color:var(--muted); }
     .ring-wrap { display:grid; justify-items:center; gap: 8px; }
     .ring-wrap .caption { font-size: 12px; color: var(--muted); }
     .alert { padding: 14px 16px; border-radius: 13px; border-left: 4px solid; line-height:1.55; font-size: 13px; }
@@ -175,7 +174,7 @@
       <header class="topbar">
         <div>
           <div class="eyebrow">ATHENA · 每日活动</div>
-          <h1 id="page-title">今天，先了解身体，再决定动多少。</h1>
+          <h1 id="page-title">今天，先听听身体，再决定要不要动。</h1>
           <p class="subtitle" id="page-subtitle">先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。</p>
         </div>
         <div class="status-chip"><span class="dot" id="system-dot"></span><span id="system-status">今天可以按自己的节奏来</span></div>
@@ -192,7 +191,7 @@
         <div class="grid two">
           <div class="card">
             <div class="section-head"><div><div class="eyebrow">今天的状态</div><h2>你现在感觉怎么样？</h2><p>调一调下面几项，给今天的提醒一个大概的起点。</p></div><div class="research-code">仅供演示</div></div>
-            <div class="metric-row"><div><div class="metric" id="readiness-value">慢一点</div><div class="muted" id="readiness-label">先选轻一点的活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">慢</strong><span>今天</span></div><div class="caption">仅作今天的参考</div></div></div>
+            <div class="metric-row"><div><div class="metric" id="readiness-value">慢一点</div><div class="muted" id="readiness-label">先选轻一点的活动</div></div><div class="ring-wrap"><div class="pace-tile" id="readiness-ring"><strong id="ring-value">慢</strong><span>今天的节奏</span></div><div class="caption">仅作今天的参考</div></div></div>
             <div style="margin-top:18px"><h3>今天大概感觉如何？</h3><p class="profile-help">不用精确，选一个最接近的就好；不想判断也可以先跳过。</p><div class="feel-grid" id="feel-grid"><button class="choice feel-choice feel" data-feel="steady" aria-pressed="false"><strong>还可以</strong><small>精力和身体都还行</small></button><button class="choice feel-choice feel" data-feel="tired" aria-pressed="false"><strong>有点累</strong><small>今天想慢一点</small></button><button class="choice feel-choice feel" data-feel="sore" aria-pressed="false"><strong>有点不舒服</strong><small>先少一点负担</small></button><button class="choice feel-choice feel" data-feel="unsure" aria-pressed="false"><strong>我不确定</strong><small>先不做判断</small></button></div></div>
             <div class="range-row"><label for="fatigue">疲劳感</label><input id="fatigue" type="range" min="0" max="10" value="3"><output id="fatigue-out">3 / 10</output></div>
             <div class="range-row"><label for="pain">疼痛/不适</label><input id="pain" type="range" min="0" max="10" value="1"><output id="pain-out">1 / 10</output></div>
@@ -333,14 +332,14 @@
       };
       const clearFeelSelection = () => { document.querySelectorAll('.feel').forEach(btn=>{btn.classList.remove('selected'); btn.setAttribute('aria-pressed','false');}); state.todayFeel='unknown'; };
       const updateReadiness = () => {
-        const score = readiness(); const pace = score >= 70 ? '可以照常' : score >= 45 ? '慢一点' : '先停一下'; const ring = score >= 70 ? '行' : score >= 45 ? '慢' : '停'; $('readiness-value').textContent=pace; $('ring-value').textContent=ring; $('readiness-ring').style.setProperty('--readiness', score+'%');
+        const score = readiness(); const pace = score >= 70 ? '可以照常' : score >= 45 ? '慢一点' : '先停一下'; const ring = score >= 70 ? '行' : score >= 45 ? '慢' : '停'; $('readiness-value').textContent=pace; $('ring-value').textContent=ring;
         $('fatigue-out').textContent=$('fatigue').value+' / 10'; $('pain-out').textContent=$('pain').value+' / 10'; $('resting-hr-out').textContent=$('resting-hr').value+' bpm';
         const label = score >= 70 ? '适合轻松活动' : score >= 45 ? '今天可以少一点、慢一点' : '先停一下，看看是否需要帮助'; $('readiness-label').textContent=label;
         const hasSymptom = Object.values(state.symptoms).some(Boolean); $('system-status').textContent = hasSymptom ? '先停下来，做个检查' : score < 45 ? '今天先缓一缓' : score < 70 ? '今天可以慢一点' : '今天可以按自己的节奏来'; $('system-dot').style.background = score < 45 ? 'var(--red)' : score < 70 ? 'var(--amber)' : 'var(--green)';
         const risk = $('decision-alert'); if (hasSymptom || score < 45) { risk.className='alert red'; risk.textContent='先不要继续自测。停下来，如果不舒服或拿不准，请联系专业人员。'; } else if(score < 70) { risk.className='alert amber'; risk.textContent='今天先选短一点、轻一点、随时能停下来的活动。'; } else { risk.className='alert green'; risk.textContent='现在不用急着动。你可以继续工作，也可以自己先做个检查。'; }
       };
       const renderLog = () => { $('event-log').innerHTML = state.events.slice().reverse().map(e=>`<tr><td>${e.time}</td><td>${e.event}</td><td>${e.action}</td><td class="status ${e.tone}">${e.result}</td></tr>`).join(''); };
-      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['要不要现在活动一下？','你可以选一个轻松的动作，也可以先延后；今天的身体感觉比过去的训练成绩更重要。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
+      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先听听身体，再决定要不要动。','先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['要不要现在活动一下？','你可以选一个轻松的动作，也可以先延后；今天的身体感觉比过去的训练成绩更重要。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
       document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTab(btn.dataset.tab)));
       ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', ()=>{ if(id!=='resting-hr') clearFeelSelection(); updateReadiness(); }));
       const feelPresets = { steady:{fatigue:2,pain:0}, tired:{fatigue:6,pain:1}, sore:{fatigue:4,pain:5} };
