@@ -122,11 +122,24 @@
     .status.stop { color:var(--red); }
     .research-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; color:#1f607c; background:#edf7fa; border-radius:8px; padding:2px 6px; }
     .footer-note { margin-top:22px; color:var(--muted); font-size:11px; line-height:1.6; }
+    .athlete-spotlight { background: linear-gradient(135deg, var(--navy), #1c5d7d); color:#fff; border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); }
+    .athlete-spotlight .eyebrow { color:#bfecef; }
+    .athlete-spotlight .muted { color:#c8dce6; }
+    .athlete-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .athlete-stat { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.13); border-radius:12px; padding:12px; }
+    .athlete-stat .label { color:#b7d5e0; font-size:11px; }
+    .athlete-stat .value { margin-top:5px; font-weight:800; font-size:18px; }
+    .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
+    .profile-field { display:grid; gap:7px; }
+    .profile-field label { color:var(--muted); font-size:13px; }
+    .profile-field select { border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--surface); color:var(--ink); }
+    .profile-field input[type="range"] { margin:7px 0 0; }
+    .profile-tip { background:var(--paleBlue); border-left:4px solid var(--blue); border-radius:12px; padding:13px 15px; color:var(--navy); font-size:13px; line-height:1.55; }
     .toast { position:fixed; right:24px; bottom:24px; background:var(--navy); color:#fff; padding:14px 16px; border-radius:12px; box-shadow:var(--shadow); max-width:340px; display:none; z-index:5; font-size:13px; line-height:1.5; }
     .toast.show { display:block; animation: slide-in .18s ease-out; }
     @keyframes slide-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    @media (max-width: 960px) { .shell { grid-template-columns: 1fr; } aside { padding: 15px 18px; position:sticky; top:0; z-index:3; } .brand { display:flex; align-items:center; justify-content:space-between; padding:0 0 12px; } .brand p { margin:0; } nav { grid-template-columns: repeat(4, 1fr); } nav button { justify-content:center; text-align:center; font-size:12px; padding:9px 6px; } .side-note { display:none; } .grid.two { grid-template-columns: 1fr; } }
-    @media (max-width: 620px) { main { padding:24px 15px 40px; } .topbar { display:block; } .status-chip { margin-top:16px; display:inline-flex; } nav { grid-template-columns:repeat(2,1fr); } .grid.three { grid-template-columns:1fr; } .choice-grid { grid-template-columns:1fr; } .hero-actions { align-items:flex-start; } .test-result { grid-template-columns:1fr; } .log-table { font-size:12px; } .log-table th:nth-child(3), .log-table td:nth-child(3) { display:none; } }
+    @media (max-width: 960px) { .shell { grid-template-columns: 1fr; } aside { padding: 15px 18px; position:sticky; top:0; z-index:3; } .brand { display:flex; align-items:center; justify-content:space-between; padding:0 0 12px; } .brand p { margin:0; } nav { grid-template-columns: repeat(5, 1fr); } nav button { justify-content:center; text-align:center; font-size:12px; padding:9px 6px; } .side-note { display:none; } .grid.two { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) { main { padding:24px 15px 40px; } .topbar { display:block; } .status-chip { margin-top:16px; display:inline-flex; } nav { grid-template-columns:repeat(2,1fr); } .grid.three { grid-template-columns:1fr; } .choice-grid { grid-template-columns:1fr; } .hero-actions { align-items:flex-start; } .test-result { grid-template-columns:1fr; } .log-table { font-size:12px; } .log-table th:nth-child(3), .log-table td:nth-child(3) { display:none; } .athlete-strip, .profile-grid { grid-template-columns:1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -138,6 +151,7 @@
       </div>
       <nav aria-label="主导航">
         <button class="nav-btn" data-tab="today" aria-selected="true">⌂ <span>今日状态</span></button>
+        <button class="nav-btn" data-tab="athlete">★ <span>运动员档案</span></button>
         <button class="nav-btn" data-tab="check">◌ <span>身体检查</span></button>
         <button class="nav-btn" data-tab="intervention">↗ <span>干预任务</span></button>
         <button class="nav-btn" data-tab="research">▤ <span>研究记录</span></button>
@@ -155,6 +169,12 @@
       </header>
 
       <section id="tab-today" class="tab active" aria-labelledby="page-title">
+        <div class="athlete-spotlight" style="margin-bottom:18px">
+          <div class="eyebrow">ATHLETE TRANSITION MODE</div>
+          <h2 style="color:#fff;margin-bottom:7px" id="athlete-greeting">把“训练节奏”翻译成“生活节奏”</h2>
+          <p class="muted" style="margin-bottom:0" id="athlete-summary">ATHENA 不把退役运动员当成普通久坐用户，而是先理解你的专项、运动生涯、伤病限制和当前转型阶段。</p>
+          <div class="athlete-strip"><div class="athlete-stat"><div class="label">专项画像</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">退役阶段</div><div class="value" id="athlete-stage-stat">退役 1–3 年</div></div><div class="athlete-stat"><div class="label">保护区</div><div class="value" id="athlete-injury-stat">左膝/下肢</div></div><div class="athlete-stat"><div class="label">节奏差距</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
+        </div>
         <div class="grid two">
           <div class="card">
             <div class="section-head"><div><div class="eyebrow">LIVE STATE</div><h2>当前身体状态</h2><p>可由穿戴设备、手机传感器和短问卷共同更新</p></div><div class="research-code">phase 2 / adaptive</div></div>
@@ -178,6 +198,29 @@
           <div class="card flat"><div class="eyebrow">PROXIMAL OUTCOME</div><h3>起身响应</h3><div class="metric" id="response-rate">—<small> today</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">接受提醒后 15 分钟内是否站起</p></div>
           <div class="card flat"><div class="eyebrow">BURDEN</div><h3>今日打扰</h3><div class="metric"><span id="burden-count">0</span><small> / 3</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">达到上限后不再主动提醒</p></div>
           <div class="card flat"><div class="eyebrow">DIGITAL TWIN</div><h3>个体模型状态</h3><div class="metric" style="font-size:26px" id="twin-status">探索期</div><p class="muted" style="font-size:12px;margin:4px 0 0">先收集偏好，再逐步适配</p></div>
+        </div>
+      </section>
+
+      <section id="tab-athlete" class="tab">
+        <div class="section-head"><div><div class="eyebrow">ATHLETE PROFILE / TRANSITION BASELINE</div><h2>先记录运动生涯，再决定如何提醒</h2><p>这不是给人贴标签，而是把专项、退役阶段和既往伤病纳入个体化边界。</p></div><div class="research-code">profile.v0.1</div></div>
+        <div class="grid two">
+          <div class="card">
+            <h3>运动生涯与转型信息</h3>
+            <div class="profile-grid">
+              <div class="profile-field"><label for="sport-profile">主要专项</label><select id="sport-profile"><option>球类</option><option>耐力类</option><option>力量/爆发类</option><option>技能/技巧类</option><option>综合/其他</option></select></div>
+              <div class="profile-field"><label for="stage-profile">退役阶段</label><select id="stage-profile"><option value="0-1">退役 0–1 年</option><option value="1-3" selected>退役 1–3 年</option><option value="3+">退役 3 年以上</option></select></div>
+              <div class="profile-field"><label for="injury-profile">当前需要保护的区域</label><select id="injury-profile"><option>无明确限制</option><option selected>左膝/下肢</option><option>踝足</option><option>腰背</option><option>肩肘/上肢</option><option>头部/脑震荡史</option></select></div>
+              <div class="profile-field"><label for="role-profile">运动员角色重要性 <output id="role-profile-out">8 / 10</output></label><input id="role-profile" type="range" min="0" max="10" value="8"></div>
+              <div class="profile-field"><label for="past-training">退役前训练量 <output id="past-training-out">10 h / 周</output></label><input id="past-training" type="range" min="0" max="20" value="10"></div>
+              <div class="profile-field"><label for="current-activity">当前主动活动 <output id="current-activity-out">3 h / 周</output></label><input id="current-activity" type="range" min="0" max="15" value="3"></div>
+            </div>
+            <div class="btn-row" style="margin-top:20px"><button class="btn primary" id="save-profile">保存运动员画像</button><button class="btn" id="reset-profile">恢复演示画像</button></div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">WHY THIS IS DIFFERENT</div><h3>ATHENA 的“运动员专属”不是换一套颜色</h3>
+            <div class="timeline"><div class="timeline-item"><time>01</time><span class="pin"></span><p><strong>从赛训史出发</strong><br><small>知道你曾经如何训练，才知道“减少运动”或“突然久坐”意味着什么。</small></p></div><div class="timeline-item"><time>02</time><span class="pin"></span><p><strong>把伤病限制写进任务排序</strong><br><small>由用户/专业人员维护保护区，系统不把受限动作当作默认选项。</small></p></div><div class="timeline-item"><time>03</time><span class="pin"></span><p><strong>用运动员听得懂的语言</strong><br><small>把“起身”表达成“下一组恢复”，但不借语言包装改变任务强度。</small></p></div><div class="timeline-item"><time>04</time><span class="pin"></span><p><strong>支持身份转型</strong><br><small>关注训练节奏、工作日结构、恢复和新的生活角色，不只盯步数。</small></p></div></div>
+            <div class="profile-tip" style="margin-top:18px">演示原则：运动员画像只用于个体化体验与安全边界，不用于诊断，不生成“运动能力排名”，也不把过去成绩当作今天的运动许可。</div>
+          </div>
         </div>
       </section>
 
@@ -211,10 +254,11 @@
       <section id="tab-intervention" class="tab">
         <div class="section-head"><div><div class="eyebrow">JUST-IN-TIME ADAPTIVE INTERVENTION</div><h2>现在要不要动？由你和安全层共同决定</h2><p>模型可以排序候选任务，但不能绕过安全层，也不能改变任务的强度和时长边界。</p></div><div class="research-code">max 3 decisions / workday</div></div>
         <div class="grid two">
-          <div class="card"><div class="eyebrow">CURRENT OPPORTUNITY</div><h2 id="intervention-title">还没有新的干预窗口</h2><div id="intervention-alert" class="alert green">模拟坐姿达到 60 分钟后，这里会出现候选任务。</div><div class="choice-grid" id="task-grid">
+          <div class="card"><div class="eyebrow">CURRENT OPPORTUNITY</div><h2 id="intervention-title">还没有新的干预窗口</h2><div id="intervention-alert" class="alert green">模拟坐姿达到 60 分钟后，这里会出现候选任务。</div><div id="athlete-mode-alert" class="profile-tip" style="margin-top:14px">运动员模式：任务排序会参考你的专项、保护区和当前转型阶段；不会因为曾经是运动员就自动提高强度。</div><div class="choice-grid" id="task-grid">
             <button class="choice task" data-task="B2-WALK"><strong>B2-WALK · 2 分钟走动</strong><small>低负荷、优先推荐；适合状态稳定时</small></button>
             <button class="choice task" data-task="B2-STS"><strong>B2-STS · 坐站转换</strong><small>短时、无需离开工位；需无急性下肢不适</small></button>
             <button class="choice task" data-task="B2-MOB"><strong>B2-MOB · 关节活动</strong><small>在原地完成；适合步行意愿较低时</small></button>
+            <button class="choice task" data-task="ATHENA-RESET"><strong>ATHENA-RESET · 赛后恢复式 2 分钟</strong><small>把起身当作“下一组恢复”，表达更像运动员熟悉的节奏</small></button>
             <button class="choice task" data-task="DEFER20"><strong>DEFER20 · 延后 20 分钟</strong><small>记录一次拒绝/延后，不追问、不施压</small></button>
           </div><div class="btn-row" style="margin-top:16px"><button class="btn primary" id="deliver-task" disabled>确认当前选择</button><button class="btn" id="decline-task">暂不需要</button></div></div>
           <div class="card"><div class="eyebrow">WHY THIS TASK</div><h3>系统只解释可审计的原因</h3><div class="timeline" id="reasoning-list"><div class="timeline-item"><time>01</time><span class="pin"></span><p><strong>安全层</strong><br><small>先检查红旗症状、疼痛、疲劳和今日打扰次数</small></p></div><div class="timeline-item"><time>02</time><span class="pin"></span><p><strong>个体状态</strong><br><small>参考近期完成率、拒绝负担和当前坐姿时长</small></p></div><div class="timeline-item"><time>03</time><span class="pin"></span><p><strong>候选任务</strong><br><small>从固定任务库选择，不由 LLM 创造新的运动处方</small></p></div></div><div class="alert amber" style="margin-top:20px">语言模型只能把已批准的任务改写成更自然的提示，不能诊断、加量、延长时长或修改安全边界。</div></div>
@@ -234,12 +278,28 @@
       const state = {
         tab: 'today', sitMinutes: 42, burden: 0, responses: [], selectedTask: null,
         symptoms: { chest:false, syncope:false, breath:false, injury:false },
+        athlete: { sport:'球类', stage:'1-3', injury:'左膝/下肢', roleImportance:8, pastTraining:10, currentActivity:3 },
         testCompleted: false, testTier: '未完成', events: [{time:'09:10', event:'入场检查', action:'safety gate', result:'通过', tone:'good'}]
       };
       const $ = (id) => document.getElementById(id);
       const nowLabel = () => new Date().toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'});
       const toast = (message) => { const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(window.__athenaToast); window.__athenaToast=setTimeout(()=>el.classList.remove('show'),3200); };
       const appendEvent = (event, action, result, tone='good') => { state.events.push({time:nowLabel(), event, action, result, tone}); renderLog(); };
+      const stageLabel = (stage) => ({'0-1':'退役 0–1 年','1-3':'退役 1–3 年','3+':'退役 3 年以上'}[stage] || stage);
+      const updateProfileOutputs = () => { $('role-profile-out').textContent=$('role-profile').value+' / 10'; $('past-training-out').textContent=$('past-training').value+' h / 周'; $('current-activity-out').textContent=$('current-activity').value+' h / 周'; };
+      const fillProfileInputs = () => { const a=state.athlete; $('sport-profile').value=a.sport; $('stage-profile').value=a.stage; $('injury-profile').value=a.injury; $('role-profile').value=a.roleImportance; $('past-training').value=a.pastTraining; $('current-activity').value=a.currentActivity; updateProfileOutputs(); };
+      const updateAthleteSummary = () => {
+        const a=state.athlete, gap=Math.max(0, Number(a.pastTraining)-Number(a.currentActivity));
+        $('athlete-sport-stat').textContent=a.sport; $('athlete-stage-stat').textContent=stageLabel(a.stage); $('athlete-injury-stat').textContent=a.injury; $('athlete-gap-stat').textContent=gap+' h / 周';
+        $('athlete-greeting').textContent = a.sport==='耐力类' ? '把耐力训练的节奏感，迁移到退役后的工作日' : a.sport==='力量/爆发类' ? '保留力量型运动员的掌控感，但不把过去的强度带进今天' : '把“训练节奏”翻译成“生活节奏”';
+        $('athlete-summary').textContent = `你是${a.sport}专项，处于${stageLabel(a.stage)}；当前保护区为“${a.injury}”。ATHENA 会把这些信息用于任务排序和语言表达，不把过去成绩当作今天的运动许可。`;
+        $('athlete-mode-alert').textContent = `运动员模式：当前为${a.sport}专项，${stageLabel(a.stage)}，保护区“${a.injury}”。系统优先提供短时恢复任务，不因曾经是运动员就自动提高强度。`;
+      };
+      const applyTaskGuardrails = () => {
+        const lower = ['左膝/下肢','踝足'].includes(state.athlete.injury);
+        document.querySelectorAll('.task').forEach(btn => { const blocked=lower && btn.dataset.task==='B2-STS'; btn.disabled=blocked; btn.setAttribute('aria-disabled',String(blocked)); btn.title=blocked?'当前保护区下不作为默认候选；请由专业人员确认后再启用。':''; });
+      };
+      try { const saved=localStorage.getItem('athena-athlete-profile'); if(saved) Object.assign(state.athlete, JSON.parse(saved)); } catch(e) {}
       const readiness = () => {
         const fatigue = Number($('fatigue').value), pain = Number($('pain').value), hr = Number($('resting-hr').value);
         const red = Object.values(state.symptoms).some(Boolean);
@@ -254,20 +314,23 @@
         const risk = $('decision-alert'); if (Object.values(state.symptoms).some(Boolean) || score < 45) { risk.className='alert red'; risk.textContent='安全层已暂停主动干预。请停止自测，必要时联系专业人员；模型和语言生成均不能覆盖这一决定。'; } else if(score < 70) { risk.className='alert amber'; risk.textContent='状态偏低：只保留低负荷、短时、可随时停止的选项；系统不会主动升级强度。'; } else { risk.className='alert green'; risk.textContent='系统当前不会打扰你。你可以继续工作，或者主动进入身体检查。'; }
       };
       const renderLog = () => { $('event-log').innerHTML = state.events.slice().reverse().map(e=>`<tr><td>${e.time}</td><td>${e.event}</td><td>${e.action}</td><td class="status ${e.tone}">${e.result}</td></tr>`).join(''); };
-      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','用少量状态信号和用户反馈，让每一次久坐中断都更合适、更可解释，也更容易坚持。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['现在要不要动？由你和安全层共同决定','模型可以排序候选任务，但不能绕过安全层，也不能改变任务的强度和时长边界。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
+      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','用少量状态信号和用户反馈，让每一次久坐中断都更合适、更可解释，也更容易坚持。'],athlete:['先记录运动生涯，再决定如何提醒','专项、退役阶段、保护区和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['现在要不要动？由你和安全层共同决定','模型可以排序候选任务，但不能绕过安全层，也不能改变任务的强度和时长边界。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
       document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTab(btn.dataset.tab)));
       ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', updateReadiness));
       $('open-check').addEventListener('click',()=>setTab('check'));
-      $('simulate-sit').addEventListener('click',()=>{ state.sitMinutes+=20; $('sit-minutes').innerHTML=state.sitMinutes+'<small> min</small>'; const ready=readiness(); if(state.sitMinutes>=60 && state.burden<3 && !Object.values(state.symptoms).some(Boolean)){ $('decision-title').textContent='出现一个低负担决策点'; $('decision-copy').textContent='你已连续坐姿 '+state.sitMinutes+' 分钟。现在可以选择一项短任务，或明确延后。'; $('intervention-title').textContent='建议：先做 2 分钟低负荷活动'; $('intervention-alert').className='alert '+(ready<70?'amber':'green'); $('intervention-alert').textContent=ready<70?'状态偏低，建议只选择可以随时停止的动作。':'状态稳定，系统开放 3 个固定任务和一次延后选项。'; setTab('intervention'); appendEvent('坐姿触发','trigger: sitting>=60m','待选择','warn'); } else { $('decision-copy').textContent='当前连续坐姿 '+state.sitMinutes+' 分钟。'; toast(state.sitMinutes>=60?'安全层暂不开放主动任务。请先完成身体检查。':'还差 '+(60-state.sitMinutes)+' 分钟进入提醒窗口。'); appendEvent('坐姿更新','sitting='+state.sitMinutes+'m','未触发','good'); } });
+      $('simulate-sit').addEventListener('click',()=>{ state.sitMinutes+=20; $('sit-minutes').innerHTML=state.sitMinutes+'<small> min</small>'; const ready=readiness(); if(state.sitMinutes>=60 && state.burden<3 && !Object.values(state.symptoms).some(Boolean)){ $('decision-title').textContent='出现一个低负担决策点'; $('decision-copy').textContent='你已连续坐姿 '+state.sitMinutes+' 分钟。现在可以选择一项短任务，或明确延后。'; $('intervention-title').textContent='建议：先做运动员专属恢复微循环'; $('intervention-alert').className='alert '+(ready<70?'amber':'green'); $('intervention-alert').textContent=ready<70?'状态偏低，建议只选择可以随时停止的动作。':'状态稳定，系统开放固定任务；当前保护区已参与排序。'; setTab('intervention'); appendEvent('坐姿触发','trigger: sitting>=60m','待选择','warn'); } else { $('decision-copy').textContent='当前连续坐姿 '+state.sitMinutes+' 分钟。'; toast(state.sitMinutes>=60?'安全层暂不开放主动任务。请先完成身体检查。':'还差 '+(60-state.sitMinutes)+' 分钟进入提醒窗口。'); appendEvent('坐姿更新','sitting='+state.sitMinutes+'m','未触发','good'); } });
       document.querySelectorAll('.symptom').forEach(btn=>btn.addEventListener('click',()=>{ const key=btn.dataset.key; state.symptoms[key]=!state.symptoms[key]; btn.classList.toggle('selected',state.symptoms[key]); btn.setAttribute('aria-pressed',String(state.symptoms[key])); const active=Object.values(state.symptoms).some(Boolean); const alert=$('screening-alert'); alert.className='alert '+(active?'red':'green'); alert.textContent=active?'发现红旗症状：不要继续耐受检查或主动干预，请联系专业人员。':'目前没有勾选红旗症状。仅代表“可以继续完成筛查”，不代表获得医疗许可。'; updateReadiness(); appendEvent('症状筛查',key,active?'暂停并升级':'未见红旗',''+(active?'stop':'good')); }));
       $('test-hr').addEventListener('input',()=> $('test-hr-out').textContent=$('test-hr').value+' bpm'); $('test-rpe').addEventListener('input',()=> $('test-rpe-out').textContent=$('test-rpe').value+' / 10');
       $('run-test').addEventListener('click',()=>{ const active=Object.values(state.symptoms).some(Boolean), rpe=Number($('test-rpe').value), hr=Number($('test-hr').value); if(active){ $('test-tier').textContent='暂停'; $('test-recommendation').textContent='联系专业人员'; $('test-permission').textContent='禁止干预'; $('test-tier').style.color='var(--red)'; appendEvent('耐受检查','submax check','未执行','stop'); toast('安全层阻止了检查：请先处理筛查结果。'); return; } state.testCompleted=true; const low=rpe<=4 && hr<=135; state.testTier=low?'绿区':'黄区'; $('test-tier').textContent=state.testTier; $('test-recommendation').textContent=low?'可考虑低负荷':'减量并观察'; $('test-permission').textContent=low?'开放候选任务':'仅低负荷'; $('test-tier').style.color=low?'var(--green)':'var(--amber)'; updateReadiness(); appendEvent('耐受检查','3-min submax','完成 · '+state.testTier,low?'good':'warn'); toast('检查结果已记录。正式研究请由专业人员确认阈值与设备质量要求。'); });
       $('reset-test').addEventListener('click',()=>{state.testCompleted=false; $('test-tier').textContent='未完成'; $('test-recommendation').textContent='先完成筛查'; $('test-permission').textContent='等待'; $('test-tier').style.color='var(--ink)'; updateReadiness();});
+      ['role-profile','past-training','current-activity'].forEach(id=>$(id).addEventListener('input',updateProfileOutputs));
+      $('save-profile').addEventListener('click',()=>{ state.athlete={sport:$('sport-profile').value,stage:$('stage-profile').value,injury:$('injury-profile').value,roleImportance:Number($('role-profile').value),pastTraining:Number($('past-training').value),currentActivity:Number($('current-activity').value)}; try { localStorage.setItem('athena-athlete-profile',JSON.stringify(state.athlete)); } catch(e) {} updateAthleteSummary(); applyTaskGuardrails(); appendEvent('运动员画像','profile.update','已保存','good'); toast('运动员画像已保存：后续任务排序会考虑专项、退役阶段和保护区。'); setTab('today'); });
+      $('reset-profile').addEventListener('click',()=>{ state.athlete={sport:'球类',stage:'1-3',injury:'左膝/下肢',roleImportance:8,pastTraining:10,currentActivity:3}; fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); try { localStorage.setItem('athena-athlete-profile',JSON.stringify(state.athlete)); } catch(e) {} toast('已恢复演示画像。'); });
       document.querySelectorAll('.task').forEach(btn=>btn.addEventListener('click',()=>{ if(Object.values(state.symptoms).some(Boolean)){toast('安全层已暂停任务选择。'); return;} state.selectedTask=btn.dataset.task; document.querySelectorAll('.task').forEach(x=>x.classList.remove('selected')); btn.classList.add('selected'); $('deliver-task').disabled=false; }));
       $('deliver-task').addEventListener('click',()=>{ if(!state.selectedTask)return; state.burden++; state.responses.push(1); $('burden-count').textContent=state.burden; $('response-rate').textContent=Math.round(state.responses.reduce((a,b)=>a+b,0)/state.responses.length*100)+'%'; appendEvent('干预分配',state.selectedTask,'用户接受','good'); toast('已记录：'+state.selectedTask+'。下一步只评估是否在 15 分钟内起身，不自动升级强度。'); $('deliver-task').disabled=true; document.querySelectorAll('.task').forEach(x=>x.classList.remove('selected')); state.selectedTask=null; });
       $('decline-task').addEventListener('click',()=>{ state.burden=Math.min(3,state.burden+1); $('burden-count').textContent=state.burden; state.responses.push(0); $('response-rate').textContent=Math.round(state.responses.reduce((a,b)=>a+b,0)/state.responses.length*100)+'%'; appendEvent('干预反馈','DEFER / decline','用户延后','warn'); toast('已记录为一次延后，不再追问。'); });
       $('export-log').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify({project:'ATHENA interactive MVP',timestamp:new Date().toISOString(),state,events:state.events},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='athena-demo-log.json'; a.click(); URL.revokeObjectURL(a.href); toast('演示记录已导出为 JSON。'); });
-      updateReadiness(); renderLog();
+      fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); updateReadiness(); renderLog();
     })();
   </script>
 </body>

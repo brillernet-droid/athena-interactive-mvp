@@ -10,6 +10,16 @@
       "sitting_minutes",
       "data_quality"
     ],
+    "athlete_profile": [
+      "sport_category",
+      "retirement_stage",
+      "protection_zone",
+      "role_importance_0_10",
+      "past_training_hours_week",
+      "current_activity_hours_week",
+      "profile_version",
+      "updated_at"
+    ],
     "safety_gate": [
       "timestamp",
       "red_flag_symptoms",
@@ -20,6 +30,8 @@
     "decision_point": [
       "timestamp",
       "trigger",
+      "athlete_mode",
+      "protection_zone",
       "candidate_tasks",
       "policy_version",
       "exploration_probability",
