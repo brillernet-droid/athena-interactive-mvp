@@ -4,6 +4,7 @@
   "entities": {
     "state_snapshot": [
       "timestamp",
+      "today_feel_self_report",
       "resting_hr_bpm",
       "fatigue_0_10",
       "pain_0_10",

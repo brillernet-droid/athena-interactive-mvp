@@ -87,6 +87,13 @@
     .choice small { color:var(--muted); line-height:1.45; }
     .choice.selected { border-color:var(--blue); box-shadow:0 0 0 3px rgba(27,132,181,.12); }
     .choice[disabled] { opacity:.5; cursor:not-allowed; }
+    .feel-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0 8px; }
+    .feel-choice { min-height:74px; padding:11px; }
+    .feel-choice strong { font-size:13px; }
+    .feel-choice small { font-size:11px; }
+    .optional-data { margin-top:10px; border-top:1px solid var(--line); padding-top:10px; }
+    .optional-data summary { cursor:pointer; color:var(--muted); font-size:12px; font-weight:700; }
+    .optional-data[open] summary { color:var(--navy); margin-bottom:8px; }
     .timeline { display:grid; gap: 12px; margin-top: 14px; }
     .timeline-item { display:grid; grid-template-columns: 70px 14px minmax(0,1fr); gap: 12px; align-items:start; }
     .timeline-item time { color: var(--muted); font-size: 12px; padding-top: 2px; }
@@ -186,9 +193,10 @@
           <div class="card">
             <div class="section-head"><div><div class="eyebrow">今天的状态</div><h2>你现在感觉怎么样？</h2><p>调一调下面几项，给今天的提醒一个大概的起点。</p></div><div class="research-code">仅供演示</div></div>
             <div class="metric-row"><div><div class="metric" id="readiness-value">慢一点</div><div class="muted" id="readiness-label">先选轻一点的活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">慢</strong><span>今天</span></div><div class="caption">仅作今天的参考</div></div></div>
-            <div class="range-row"><label for="resting-hr">静息心率（可选）</label><input id="resting-hr" type="range" min="45" max="100" value="62"><output id="resting-hr-out">62 bpm</output></div>
+            <div style="margin-top:18px"><h3>今天大概感觉如何？</h3><p class="profile-help">不用精确，选一个最接近的就好；不想判断也可以先跳过。</p><div class="feel-grid" id="feel-grid"><button class="choice feel-choice feel" data-feel="steady" aria-pressed="false"><strong>还可以</strong><small>精力和身体都还行</small></button><button class="choice feel-choice feel" data-feel="tired" aria-pressed="false"><strong>有点累</strong><small>今天想慢一点</small></button><button class="choice feel-choice feel" data-feel="sore" aria-pressed="false"><strong>有点不舒服</strong><small>先少一点负担</small></button><button class="choice feel-choice feel" data-feel="unsure" aria-pressed="false"><strong>我不确定</strong><small>先不做判断</small></button></div></div>
             <div class="range-row"><label for="fatigue">疲劳感</label><input id="fatigue" type="range" min="0" max="10" value="3"><output id="fatigue-out">3 / 10</output></div>
             <div class="range-row"><label for="pain">疼痛/不适</label><input id="pain" type="range" min="0" max="10" value="1"><output id="pain-out">1 / 10</output></div>
+            <details class="optional-data"><summary>有设备数据？可以补充静息心率</summary><div class="range-row"><label for="resting-hr">静息心率</label><input id="resting-hr" type="range" min="45" max="100" value="62"><output id="resting-hr-out">62 bpm</output></div></details>
             <div class="hero-actions"><div><div class="muted" style="font-size:12px; margin-bottom:5px">已经坐了多久</div><div class="metric" id="sit-minutes">42<small> 分钟</small></div></div><div class="btn-row"><button class="btn secondary" id="simulate-sit">模拟再坐 20 分钟</button><button class="btn primary" id="open-check">我想先检查一下</button></div></div>
           </div>
           <div class="card">
@@ -286,7 +294,7 @@
   <script>
     (() => {
       const state = {
-        tab: 'today', sitMinutes: 42, burden: 0, responses: [], selectedTask: null,
+        tab: 'today', sitMinutes: 42, burden: 0, responses: [], selectedTask: null, todayFeel: 'unknown',
         symptoms: { chest:false, syncope:false, breath:false, injury:false },
         athlete: { sport:'球类', stage:'1-3', injury:'unknown', goal:'break-sitting', roleImportance:8, pastTraining:10, currentActivity:3 },
         testCompleted: false, testTier: '未完成', events: [{time:'09:10', event:'入场检查', action:'safety gate', result:'通过', tone:'good'}]
@@ -323,6 +331,7 @@
         let score = Math.round(90 - fatigue*5 - pain*6 - Math.max(0, hr-60)*0.35);
         if (red) score = Math.min(score, 20); if (!state.testCompleted) score -= 4; return Math.max(0, Math.min(100, score));
       };
+      const clearFeelSelection = () => { document.querySelectorAll('.feel').forEach(btn=>{btn.classList.remove('selected'); btn.setAttribute('aria-pressed','false');}); state.todayFeel='unknown'; };
       const updateReadiness = () => {
         const score = readiness(); const pace = score >= 70 ? '可以照常' : score >= 45 ? '慢一点' : '先停一下'; const ring = score >= 70 ? '行' : score >= 45 ? '慢' : '停'; $('readiness-value').textContent=pace; $('ring-value').textContent=ring; $('readiness-ring').style.setProperty('--readiness', score+'%');
         $('fatigue-out').textContent=$('fatigue').value+' / 10'; $('pain-out').textContent=$('pain').value+' / 10'; $('resting-hr-out').textContent=$('resting-hr').value+' bpm';
@@ -333,7 +342,9 @@
       const renderLog = () => { $('event-log').innerHTML = state.events.slice().reverse().map(e=>`<tr><td>${e.time}</td><td>${e.event}</td><td>${e.action}</td><td class="status ${e.tone}">${e.result}</td></tr>`).join(''); };
       const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['要不要现在活动一下？','你可以选一个轻松的动作，也可以先延后；今天的身体感觉比过去的训练成绩更重要。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
       document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTab(btn.dataset.tab)));
-      ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', updateReadiness));
+      ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', ()=>{ if(id!=='resting-hr') clearFeelSelection(); updateReadiness(); }));
+      const feelPresets = { steady:{fatigue:2,pain:0}, tired:{fatigue:6,pain:1}, sore:{fatigue:4,pain:5} };
+      document.querySelectorAll('.feel').forEach(btn=>btn.addEventListener('click',()=>{ const key=btn.dataset.feel; document.querySelectorAll('.feel').forEach(x=>{x.classList.remove('selected'); x.setAttribute('aria-pressed','false');}); btn.classList.add('selected'); btn.setAttribute('aria-pressed','true'); state.todayFeel=key; if(feelPresets[key]) { $('fatigue').value=feelPresets[key].fatigue; $('pain').value=feelPresets[key].pain; } updateReadiness(); }));
       $('open-check').addEventListener('click',()=>setTab('check'));
       $('simulate-sit').addEventListener('click',()=>{ state.sitMinutes+=20; $('sit-minutes').innerHTML=state.sitMinutes+'<small> 分钟</small>'; const ready=readiness(); if(state.sitMinutes>=60 && state.burden<3 && !Object.values(state.symptoms).some(Boolean)){ $('decision-title').textContent='要不要起来活动一下？'; $('decision-copy').textContent='你已经坐了 '+state.sitMinutes+' 分钟。选一个轻松的动作，或者先延后都可以。'; $('intervention-title').textContent='可以先起来活动两分钟'; $('intervention-alert').className='alert '+(ready<70?'amber':'green'); $('intervention-alert').textContent=ready<70?'今天感觉有点累，先选能随时停下来的动作。':'状态还可以，挑一个你愿意做的就好。'; setTab('intervention'); appendEvent('坐姿触发','trigger: sitting>=60m','待选择','warn'); } else { $('decision-copy').textContent='现在已经坐了 '+state.sitMinutes+' 分钟。'; toast(state.sitMinutes>=60?'今天先做个检查，再决定要不要活动。':'还差 '+(60-state.sitMinutes)+' 分钟，才会出现一次提醒。'); appendEvent('坐姿更新','sitting='+state.sitMinutes+'m','未触发','good'); } });
       document.querySelectorAll('.symptom').forEach(btn=>btn.addEventListener('click',()=>{ const key=btn.dataset.key; state.symptoms[key]=!state.symptoms[key]; btn.classList.toggle('selected',state.symptoms[key]); btn.setAttribute('aria-pressed',String(state.symptoms[key])); const active=Object.values(state.symptoms).some(Boolean); const alert=$('screening-alert'); alert.className='alert '+(active?'red':'green'); alert.textContent=active?'发现红旗症状：不要继续耐受检查或主动干预，请联系专业人员。':'目前没有勾选红旗症状。仅代表“可以继续完成筛查”，不代表获得医疗许可。'; updateReadiness(); appendEvent('症状筛查',key,active?'暂停并升级':'未见红旗',''+(active?'stop':'good')); }));
