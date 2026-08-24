@@ -42,6 +42,18 @@
     .server-status::before { content:""; width:7px; height:7px; border-radius:50%; background:#f0b94b; }
     .server-status.online::before { background:#61d5a3; }
     .server-status.offline::before { background:#f07d7d; }
+    .journey-card { margin-bottom:18px; border-color:#bfe2e3; background:linear-gradient(135deg,#fbffff,#f2f8fa); }
+    .journey-progress { color:var(--blue); font-size:12px; font-weight:800; white-space:nowrap; }
+    .journey-body { min-height:92px; display:grid; gap:12px; }
+    .journey-question { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
+    .journey-choices { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; }
+    .journey-choice { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fff; text-align:left; color:var(--ink); }
+    .journey-choice:hover, .journey-choice.selected { border-color:var(--blue); box-shadow:0 0 0 3px rgba(27,132,181,.1); }
+    .journey-choice strong { display:block; font-size:13px; margin-bottom:4px; }
+    .journey-choice small { color:var(--muted); font-size:11px; line-height:1.4; }
+    .journey-result { border-left:4px solid var(--cyan); border-radius:10px; padding:12px 14px; background:#fff; line-height:1.55; }
+    .journey-result strong { display:block; margin-bottom:4px; }
+    @media (max-width: 620px) { .journey-choices { grid-template-columns:1fr 1fr; } }
     main { min-width: 0; padding: 30px clamp(20px, 4vw, 56px) 52px; }
     .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
     h1, h2, h3, p { margin-top: 0; }
@@ -192,6 +204,10 @@
           <div class="athlete-strip"><div class="athlete-stat"><div class="label">过去练什么</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">离开系统训练</div><div class="value" id="athlete-stage-stat">1–3 年</div></div><div class="athlete-stat"><div class="label">最近哪里不舒服</div><div class="value" id="athlete-injury-stat">暂不设置</div></div><div class="athlete-stat"><div class="label">过去多运动多少</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
           <div class="athlete-next"><span class="label">今天可以先</span><strong id="athlete-today-tip">把一次起身当作热身，不追求强度。</strong></div>
         </div>
+        <div class="card journey-card" id="daily-journey">
+          <div class="section-head"><div><div class="eyebrow">今天的互动引导</div><h2 id="journey-title">先从一句话开始</h2><p id="journey-copy">不用一次填完所有资料。跟着三步走，ATHENA 会根据你的回答给出今天的第一步。</p></div><div class="journey-progress" id="journey-progress">第 1 步 / 3</div></div>
+          <div class="journey-body" id="journey-body"></div>
+        </div>
         <div class="grid two">
           <div class="card">
             <div class="section-head"><div><div class="eyebrow">今天的状态</div><h2>你现在感觉怎么样？</h2><p>调一调下面几项，给今天的提醒一个大概的起点。</p></div><div class="research-code">仅供演示</div></div>
@@ -297,7 +313,7 @@
   <script>
     (() => {
       const state = {
-        tab: 'today', sitMinutes: 42, burden: 0, responses: [], selectedTask: null, todayFeel: 'unknown',
+        tab: 'today', journeyStep: 1, sitMinutes: 42, burden: 0, responses: [], selectedTask: null, todayFeel: 'unknown',
         symptoms: { chest:false, syncope:false, breath:false, injury:false },
         athlete: { sport:'球类', sportDetail:'', stage:'1-3', injury:'unknown', goal:'break-sitting', roleImportance:8, pastTraining:10, currentActivity:3 },
         testCompleted: false, testTier: '未完成', testHr: 102, testRpe: 3, restingHr: 62,
@@ -318,6 +334,14 @@
       const focusAreaLabel = (value) => ({unknown:'暂不设置',none:'没有特别需要避开的部位','knee-leg':'膝盖/腿部','hip-pelvis':'髋部/骨盆','ankle-foot':'脚踝/足部',back:'腰背',neck:'颈部','shoulder-arm':'肩膀/手臂','wrist-hand':'手腕/手部',head:'头部撞击/脑震荡经历',multi:'多个部位',other:'其他部位'}[normalizeFocusArea(value)] || value);
       const goalLabel = (goal) => ({'break-sitting':'减少久坐，及时起身','find-rhythm':'找回规律的生活节奏','move-safely':'在不适或旧伤限制下安全活动','rebuild-capacity':'逐步找回力量和活动能力','workday-energy':'改善工作日精力','sleep-recovery':'改善睡眠与恢复','social-team':'重新建立社交或团队节奏','understand-body':'先了解身体，再决定动多少',uncertain:'还不确定'}[goal] || '先了解身体，再决定动多少');
       const goalTip = (goal) => ({'break-sitting':'把第一次起身当作热身，走两分钟就够了。','find-rhythm':'先固定一个你愿意坚持的两分钟活动时间。','move-safely':'先做原地、轻松、随时可以停下来的动作。','rebuild-capacity':'先完成一小段恢复，不追求回到以前的强度。','workday-energy':'工作间隙先站起来，让身体换个姿势。','sleep-recovery':'白天先做一点轻松活动，不用把自己练累。','social-team':'把一次起身当作训练间歇，慢慢找回节奏。','understand-body':'先听听身体的反馈，再决定今天做多少。',uncertain:'先听听身体的反馈，再决定今天做多少。'}[goal] || '把第一次起身当作热身，走两分钟就够了。');
+      const journeyGoals = [{key:'break-sitting',title:'减少久坐',copy:'先让身体换个姿势'},{key:'find-rhythm',title:'找回节奏',copy:'先从每天两分钟开始'},{key:'move-safely',title:'安全活动',copy:'轻一点，随时可以停'},{key:'workday-energy',title:'工作日有精神',copy:'在间隙里动一动'}];
+      const renderJourney = () => {
+        const step=state.journeyStep||1, title=$('journey-title'), copy=$('journey-copy'), progress=$('journey-progress'), body=$('journey-body');
+        progress.textContent=`第 ${step} 步 / 3`;
+        if(step===1){ title.textContent='今天大概是什么感觉？'; copy.textContent='不用精确，选一个最接近的就好。'; body.innerHTML='<p class="journey-question">这一句话会影响后面的活动节奏。</p><div class="journey-choices"><button class="journey-choice" data-journey-feel="steady"><strong>还可以</strong><small>精力和身体都还行</small></button><button class="journey-choice" data-journey-feel="tired"><strong>有点累</strong><small>今天想慢一点</small></button><button class="journey-choice" data-journey-feel="sore"><strong>有点不舒服</strong><small>先少一点负担</small></button><button class="journey-choice" data-journey-feel="unsure"><strong>我不确定</strong><small>先不做判断</small></button></div>'; }
+        if(step===2){ title.textContent='今天最想先改善什么？'; copy.textContent='选一个最贴近今天的需要，之后也可以再改。'; body.innerHTML='<p class="journey-question">这会改变下一步先出现的任务。</p><div class="journey-choices">'+journeyGoals.map(g=>`<button class="journey-choice" data-journey-goal="${g.key}"><strong>${g.title}</strong><small>${g.copy}</small></button>`).join('')+'</div><button class="btn" id="journey-back">回到上一步</button>'; }
+        if(step===3){ const first=preferredTaskOrder(state.athlete.goal,state.athlete.roleImportance).find(id=>id!=='DEFER20'); title.textContent='今天可以先做这一件'; copy.textContent='你的回答已经变成一个具体、轻量的选择。'; body.innerHTML=`<div class="journey-result"><strong>${taskUserLabel(first)}</strong><span>${goalTip(state.athlete.goal)} ${toneTip(state.athlete.roleImportance)}</span></div><div class="btn-row"><button class="btn primary" id="journey-start">进入这个任务</button><button class="btn" id="journey-back">重新选目标</button></div>`; }
+      };
       const toneTip = (tone) => Number(tone)>=7 ? '可以把它当作熟悉的“下一组恢复”。' : Number(tone)<=3 ? '不用像训练一样完成，就当作日常换个姿势。' : '保持一点节奏就好，不需要回到训练强度。';
       const updateAthleteLanguage = (tone) => { const value=Number(tone); if(value>=7) { $('athena-reset-name').textContent='赛后恢复式 2 分钟'; $('athena-reset-copy').textContent='把起身当作“下一组恢复”，保留一点熟悉的训练节奏'; } else if(value<=3) { $('athena-reset-name').textContent='换个姿势 2 分钟'; $('athena-reset-copy').textContent='不用像训练一样完成，站起来走两步就好'; } else { $('athena-reset-name').textContent='两分钟恢复'; $('athena-reset-copy').textContent='把起身当作训练间歇，轻松完成就好'; } };
       const taskUserLabel = (task) => { const button=Array.from(document.querySelectorAll('.task')).find(x=>x.dataset.task===task); return button?.querySelector('strong')?.textContent.trim() || task; };
@@ -365,10 +389,10 @@
           Object.assign(state.athlete,session.athlete||{});
           const today=session.today||{}; Object.assign(state,today); state.symptoms={...state.symptoms,...(today.symptoms||{})};
           if(Array.isArray(session.events)) state.events=session.events;
-          normalizeAthlete(); fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); applyTodayToControls(); renderLog(); setServerStatus('online','已连接 · 数据会保存');
+          normalizeAthlete(); fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); applyTodayToControls(); renderLog(); renderJourney(); setServerStatus('online','已连接 · 数据会保存');
         } catch(error) {
           try { const saved=JSON.parse(localStorage.getItem('athena-athena-fallback')||'null'); if(saved){ Object.assign(state.athlete,saved.athlete||{}); Object.assign(state,saved.today||{}); state.symptoms={...state.symptoms,...(saved.today?.symptoms||{})}; state.events=saved.events||state.events; } } catch(e) {}
-          normalizeAthlete(); fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); applyTodayToControls(); renderLog(); setServerStatus('offline','暂时离线 · 保存在本机');
+          normalizeAthlete(); fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); applyTodayToControls(); renderLog(); renderJourney(); setServerStatus('offline','暂时离线 · 保存在本机');
         }
       };
       const readiness = () => {
@@ -388,6 +412,7 @@
       const renderLog = () => { $('event-log').innerHTML = state.events.slice().reverse().map(e=>`<tr><td>${e.time}</td><td>${e.event}</td><td>${e.action}</td><td class="status ${e.tone}">${e.result}</td></tr>`).join(''); };
       const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先听听身体，再决定要不要动。','先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['今天适不适合活动？','先看看有没有需要停下来的情况；愿意的话，再做 3 分钟轻松活动。'],intervention:['要不要现在活动一下？','你可以选一个轻松的动作，也可以先延后；今天的身体感觉比过去的训练成绩更重要。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
       document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTab(btn.dataset.tab)));
+      $('journey-body').addEventListener('click',(event)=>{ const feel=event.target.closest('[data-journey-feel]'), goal=event.target.closest('[data-journey-goal]'); if(feel){ const existing=document.querySelector(`.feel[data-feel="${feel.dataset.journeyFeel}"]`); if(existing) existing.click(); state.journeyStep=2; renderJourney(); return; } if(goal){ state.athlete.goal=goal.dataset.journeyGoal; $('goal-profile').value=state.athlete.goal; updateAthleteSummary(); applyTaskGuardrails(); state.journeyStep=3; persistState(); renderJourney(); return; } if(event.target.closest('#journey-back')){ state.journeyStep=state.journeyStep===3?2:1; renderJourney(); return; } if(event.target.closest('#journey-start')){ if(Object.values(state.symptoms).some(Boolean)){ setTab('check'); toast('先做身体检查，再决定今天是否继续。'); return; } const first=preferredTaskOrder(state.athlete.goal,state.athlete.roleImportance).find(id=>{ const btn=Array.from(document.querySelectorAll('.task')).find(x=>x.dataset.task===id); return btn && !btn.disabled; }); setTab('intervention'); const task=Array.from(document.querySelectorAll('.task')).find(x=>x.dataset.task===first); if(task) task.click(); } });
       ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', ()=>{ if(id!=='resting-hr') clearFeelSelection(); state.fatigue=Number($('fatigue').value); state.pain=Number($('pain').value); state.restingHr=Number($('resting-hr').value); updateReadiness(); persistState(); }));
       const feelPresets = { steady:{fatigue:2,pain:0}, tired:{fatigue:6,pain:1}, sore:{fatigue:4,pain:5} };
       document.querySelectorAll('.feel').forEach(btn=>btn.addEventListener('click',()=>{ const key=btn.dataset.feel; document.querySelectorAll('.feel').forEach(x=>{x.classList.remove('selected'); x.setAttribute('aria-pressed','false');}); btn.classList.add('selected'); btn.setAttribute('aria-pressed','true'); state.todayFeel=key; if(feelPresets[key]) { $('fatigue').value=feelPresets[key].fatigue; $('pain').value=feelPresets[key].pain; } state.fatigue=Number($('fatigue').value); state.pain=Number($('pain').value); updateReadiness(); persistState(); }));
@@ -404,7 +429,7 @@
       $('deliver-task').addEventListener('click',()=>{ if(!state.selectedTask)return; const userTask=taskUserLabel(state.selectedTask); state.burden++; state.responses.push(1); $('burden-count').textContent=state.burden; $('response-rate').textContent=Math.round(state.responses.reduce((a,b)=>a+b,0)/state.responses.length*100)+'%'; appendEvent('干预分配',state.selectedTask,'用户接受','good'); toast('已记下：'+userTask+'。接下来只看看 15 分钟内有没有起身，不会自动给你加量。'); $('deliver-task').disabled=true; document.querySelectorAll('.task').forEach(x=>x.classList.remove('selected')); state.selectedTask=null; });
       $('decline-task').addEventListener('click',()=>{ state.burden=Math.min(3,state.burden+1); $('burden-count').textContent=state.burden; state.responses.push(0); $('response-rate').textContent=Math.round(state.responses.reduce((a,b)=>a+b,0)/state.responses.length*100)+'%'; appendEvent('干预反馈','DEFER / decline','用户延后','warn'); toast('已记录为一次延后，不再追问。'); });
       $('export-log').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify({project:'ATHENA interactive MVP',timestamp:new Date().toISOString(),state,events:state.events},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='athena-demo-log.json'; a.click(); URL.revokeObjectURL(a.href); toast('演示记录已导出为 JSON。'); });
-      fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); updateReadiness(); renderLog(); hydrateSession();
+      fillProfileInputs(); updateAthleteSummary(); applyTaskGuardrails(); updateReadiness(); renderLog(); renderJourney(); hydrateSession();
     })();
   </script>
 </body>
