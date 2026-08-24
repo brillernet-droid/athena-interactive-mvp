@@ -271,7 +271,7 @@
       <section id="tab-intervention" class="tab">
         <div class="section-head"><div><div class="eyebrow">现在可以做什么</div><h2>要不要现在活动一下？</h2><p>你可以选一个轻松的动作，也可以先延后。今天的身体感觉比过去的训练成绩更重要。</p></div><div class="research-code">每天最多 3 次</div></div>
         <div class="grid two">
-          <div class="card"><div class="eyebrow">现在可以做什么</div><h2 id="intervention-title">还没有需要你决定的事</h2><div id="intervention-alert" class="alert green">模拟再坐 20 分钟后，这里会出现几个轻松的选择。</div><div id="athlete-mode-alert" class="profile-tip" style="margin-top:14px">你的运动经历会帮助我们选更合适的提示；今天做多少，以你现在的感觉为准。</div><div class="choice-grid" id="task-grid">
+          <div class="card"><div class="eyebrow">现在可以做什么</div><h2 id="intervention-title">还没有需要你决定的事</h2><div id="intervention-alert" class="alert green">模拟再坐 20 分钟后，这里会出现几个轻松的选择。</div><div id="athlete-mode-alert" class="profile-tip" style="margin-top:14px">你的运动经历会帮助我们选更合适的提示；今天做多少，以你现在的感觉为准。</div><p class="profile-help" id="task-order-note" style="margin-top:10px">先放在前面的是：站起来走两分钟。</p><div class="choice-grid" id="task-grid">
             <button class="choice task" data-task="B2-WALK"><strong>站起来走两分钟</strong><small>轻松走一走，不用追求速度</small></button>
             <button class="choice task" data-task="B2-STS"><strong>站起来，再坐下</strong><small>做几次就好；如果腿或膝盖不舒服，先不要选</small></button>
             <button class="choice task" data-task="B2-MOB"><strong>原地活动一下</strong><small>不想走远也没关系，在原地动一动</small></button>
@@ -321,6 +321,7 @@
         $('athlete-summary').textContent = `你以前练${sportLabel}，已经离开系统训练 ${stageLabel(a.stage)}。今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'身体关注区域还没有填写。':`最近你提到“${focus}”需要少一点负担。`} 今天怎么动，以你现在的感觉为准。`;
         $('athlete-today-tip').textContent = `${goalTip(a.goal)} ${toneTip(a.roleImportance)}`;
         updateAthleteLanguage(a.roleImportance);
+        applyTaskPersonalization();
         const toneSentence = Number(a.roleImportance)>=7 ? '提示会保留一点你熟悉的训练节奏。' : Number(a.roleImportance)<=3 ? '提示会更像日常提醒，不要求你按训练方式完成。' : '提示会保持轻松的节奏，不要求回到训练强度。';
         $('athlete-mode-alert').textContent = `你以前练${sportLabel}，已离开系统训练 ${stageLabel(a.stage)}；今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'你还没有填写身体关注区域，我们先从轻松的动作开始。':`你提到“${focus}”需要少一点负担，我们会先避开不合适的选择。`} ${toneSentence}`;
       };
@@ -328,6 +329,18 @@
         const lower = ['knee-leg','ankle-foot'].includes(normalizeFocusArea(state.athlete.injury));
         document.querySelectorAll('.task').forEach(btn => { const blocked=lower && btn.dataset.task==='B2-STS'; btn.disabled=blocked; btn.setAttribute('aria-disabled',String(blocked)); btn.title=blocked?'当前自报的身体关注区域下不作为默认候选；请由专业人员确认后再启用。':''; });
       };
+      const preferredTaskOrder = (goal, tone) => { const orders={
+        'break-sitting':['B2-WALK','B2-MOB','ATHENA-RESET','B2-STS','DEFER20'],
+        'find-rhythm':['ATHENA-RESET','B2-WALK','B2-MOB','B2-STS','DEFER20'],
+        'move-safely':['B2-MOB','B2-WALK','ATHENA-RESET','B2-STS','DEFER20'],
+        'rebuild-capacity':Number(tone)>=7?['ATHENA-RESET','B2-STS','B2-WALK','B2-MOB','DEFER20']:['B2-MOB','B2-WALK','ATHENA-RESET','B2-STS','DEFER20'],
+        'workday-energy':['B2-WALK','ATHENA-RESET','B2-MOB','B2-STS','DEFER20'],
+        'sleep-recovery':['B2-WALK','B2-MOB','ATHENA-RESET','B2-STS','DEFER20'],
+        'social-team':['ATHENA-RESET','B2-WALK','B2-MOB','B2-STS','DEFER20'],
+        'understand-body':['B2-MOB','B2-WALK','ATHENA-RESET','B2-STS','DEFER20'],
+        uncertain:['B2-WALK','B2-MOB','ATHENA-RESET','B2-STS','DEFER20']
+      }; return orders[goal] || orders.uncertain; };
+      const applyTaskPersonalization = () => { const grid=$('task-grid'), order=preferredTaskOrder(state.athlete.goal,state.athlete.roleImportance); order.forEach(id=>{ const button=Array.from(grid.querySelectorAll('.task')).find(x=>x.dataset.task===id); if(button) grid.appendChild(button); }); const first=order.find(id=>id!=='DEFER20'); $('task-order-note').textContent='先放在前面的是：'+taskUserLabel(first)+'。'; };
       try { const saved=localStorage.getItem('athena-athlete-profile'); if(saved) Object.assign(state.athlete, JSON.parse(saved)); state.athlete.sport=normalizeSport(state.athlete.sport); state.athlete.injury=normalizeFocusArea(state.athlete.injury); state.athlete.stage=normalizeStage(state.athlete.stage); state.athlete.goal=state.athlete.goal || 'break-sitting'; state.athlete.sportDetail=state.athlete.sportDetail || ''; } catch(e) {}
       const readiness = () => {
         const fatigue = Number($('fatigue').value), pain = Number($('pain').value), hr = Number($('resting-hr').value);
