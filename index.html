@@ -150,7 +150,7 @@
     <aside>
       <div class="brand">
         <div class="mark">ATHENA / MVP</div>
-        <p>行为数字孪生 · 久坐中断 · 安全优先</p>
+        <p>退役运动员 · 日常活动 · 安全优先</p>
       </div>
       <nav aria-label="主导航">
         <button class="nav-btn" data-tab="today" aria-selected="true">⌂ <span>今日状态</span></button>
@@ -159,48 +159,48 @@
         <button class="nav-btn" data-tab="intervention">↗ <span>干预任务</span></button>
         <button class="nav-btn" data-tab="research">▤ <span>研究记录</span></button>
       </nav>
-      <div class="side-note"><strong>研究型原型</strong><br>所有干预都先经过确定性安全层。这里的“状态”和“测试”是交互演示，不是医疗诊断或运动处方。</div>
+      <div class="side-note"><strong>演示版本</strong><br>这里的记录只用于帮助你决定今天是否适合起身活动，不是医疗诊断，也不是运动处方。</div>
     </aside>
     <main>
       <header class="topbar">
         <div>
-          <div class="eyebrow">HAST-DT / ATHENA</div>
+          <div class="eyebrow">ATHENA · 每日活动</div>
           <h1 id="page-title">今天，先了解身体，再决定动多少。</h1>
-          <p class="subtitle" id="page-subtitle">用少量状态信号和用户反馈，让每一次久坐中断都更合适、更可解释，也更容易坚持。</p>
+          <p class="subtitle" id="page-subtitle">先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。</p>
         </div>
-        <div class="status-chip"><span class="dot" id="system-dot"></span><span id="system-status">安全层在线 · 规则优先</span></div>
+        <div class="status-chip"><span class="dot" id="system-dot"></span><span id="system-status">今天可以按自己的节奏来</span></div>
       </header>
 
       <section id="tab-today" class="tab active" aria-labelledby="page-title">
         <div class="athlete-spotlight" style="margin-bottom:18px">
-          <div class="eyebrow">ATHLETE TRANSITION MODE</div>
-          <h2 style="color:#fff;margin-bottom:7px" id="athlete-greeting">把“训练节奏”翻译成“生活节奏”</h2>
-          <p class="muted" style="margin-bottom:0" id="athlete-summary">ATHENA 不把退役运动员当成普通久坐用户，而是先理解你的专项、运动生涯、身体感受和当前转型阶段。</p>
-          <div class="athlete-strip"><div class="athlete-stat"><div class="label">专项画像</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">退役阶段</div><div class="value" id="athlete-stage-stat">退役 1–3 年</div></div><div class="athlete-stat"><div class="label">需要留意</div><div class="value" id="athlete-injury-stat">暂不设置</div></div><div class="athlete-stat"><div class="label">节奏差距</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
+          <div class="eyebrow">给退役运动员的今天</div>
+          <h2 style="color:#fff;margin-bottom:7px" id="athlete-greeting">把过去的训练习惯，慢慢带回日常</h2>
+          <p class="muted" style="margin-bottom:0" id="athlete-summary">这里会记住你的运动经历，但今天怎么动，还是以你现在的感觉为准。</p>
+          <div class="athlete-strip"><div class="athlete-stat"><div class="label">过去练什么</div><div class="value" id="athlete-sport-stat">球类</div></div><div class="athlete-stat"><div class="label">离开系统训练</div><div class="value" id="athlete-stage-stat">1–3 年</div></div><div class="athlete-stat"><div class="label">最近哪里不舒服</div><div class="value" id="athlete-injury-stat">暂不设置</div></div><div class="athlete-stat"><div class="label">每周活动差距</div><div class="value" id="athlete-gap-stat">7 h / 周</div></div></div>
         </div>
         <div class="grid two">
           <div class="card">
-            <div class="section-head"><div><div class="eyebrow">LIVE STATE</div><h2>当前身体状态</h2><p>可由穿戴设备、手机传感器和短问卷共同更新</p></div><div class="research-code">phase 2 / adaptive</div></div>
-            <div class="metric-row"><div><div class="metric" id="readiness-value">78<small>/100 readiness</small></div><div class="muted" id="readiness-label">适合低负荷微活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">78</strong><span>状态</span></div><div class="caption">由规则层计算</div></div></div>
-            <div class="range-row"><label for="resting-hr">静息心率</label><input id="resting-hr" type="range" min="45" max="100" value="62"><output id="resting-hr-out">62 bpm</output></div>
+            <div class="section-head"><div><div class="eyebrow">今天的状态</div><h2>你现在感觉怎么样？</h2><p>调一调下面几项，给今天的提醒一个大概的起点。</p></div><div class="research-code">仅供演示</div></div>
+            <div class="metric-row"><div><div class="metric" id="readiness-value">78<small>/100</small></div><div class="muted" id="readiness-label">适合低负荷微活动</div></div><div class="ring-wrap"><div class="readiness-ring" id="readiness-ring" style="--readiness:78%"><strong id="ring-value">78</strong><span>今天</span></div><div class="caption">仅作今天的参考</div></div></div>
+            <div class="range-row"><label for="resting-hr">静息心率（可选）</label><input id="resting-hr" type="range" min="45" max="100" value="62"><output id="resting-hr-out">62 bpm</output></div>
             <div class="range-row"><label for="fatigue">疲劳感</label><input id="fatigue" type="range" min="0" max="10" value="3"><output id="fatigue-out">3 / 10</output></div>
             <div class="range-row"><label for="pain">疼痛/不适</label><input id="pain" type="range" min="0" max="10" value="1"><output id="pain-out">1 / 10</output></div>
-            <div class="hero-actions"><div><div class="muted" style="font-size:12px; margin-bottom:5px">连续坐姿</div><div class="metric" id="sit-minutes">42<small> min</small></div></div><div class="btn-row"><button class="btn secondary" id="simulate-sit">模拟 +20 分钟</button><button class="btn primary" id="open-check">做身体检查</button></div></div>
+            <div class="hero-actions"><div><div class="muted" style="font-size:12px; margin-bottom:5px">已经坐了多久</div><div class="metric" id="sit-minutes">42<small> 分钟</small></div></div><div class="btn-row"><button class="btn secondary" id="simulate-sit">模拟再坐 20 分钟</button><button class="btn primary" id="open-check">我想先检查一下</button></div></div>
           </div>
           <div class="card">
-            <div class="eyebrow">NEXT DECISION POINT</div><h2 id="decision-title">还未到提醒窗口</h2><p class="muted" id="decision-copy">达到 60 分钟连续坐姿后，系统才会请求一次低负担决策。</p>
-            <div id="decision-alert" class="alert green">系统当前不会打扰你。你可以继续工作，或者主动进入身体检查。</div>
-            <div style="margin-top:18px"><h3>今天的控制边界</h3><div class="muted" style="font-size:13px;line-height:1.7">每个工作日最多 3 个决策点 · 相邻提醒至少间隔 90 分钟 · 尊重免打扰时间 · 规则层优先于模型和语言生成。</div></div>
+            <div class="eyebrow">接下来</div><h2 id="decision-title">先不用提醒</h2><p class="muted" id="decision-copy">再坐一会儿，ATHENA 会问你要不要起来活动一下。</p>
+            <div id="decision-alert" class="alert green">现在不会打扰你。你可以继续工作，也可以自己先做个检查。</div>
+            <div style="margin-top:18px"><h3>今天会怎么提醒</h3><div class="muted" style="font-size:13px;line-height:1.7">每天最多提醒 3 次 · 两次提醒至少间隔 90 分钟 · 你可以随时延后或关掉提醒。</div></div>
             <div class="timeline" id="timeline">
-              <div class="timeline-item"><time>09:10</time><span class="pin"></span><p><strong>完成入场检查</strong><br><small>状态基线已建立，建议从低负荷开始</small></p></div>
-              <div class="timeline-item"><time>10:00</time><span class="pin"></span><p><strong>坐姿 42 分钟</strong><br><small>尚未达到触发阈值</small></p></div>
+              <div class="timeline-item"><time>09:10</time><span class="pin"></span><p><strong>做了一个简单检查</strong><br><small>先看看今天的状态，再决定要不要活动</small></p></div>
+              <div class="timeline-item"><time>10:00</time><span class="pin"></span><p><strong>已经坐了 42 分钟</strong><br><small>距离下一次提醒还有一会儿</small></p></div>
             </div>
           </div>
         </div>
         <div class="grid three" style="margin-top:18px">
-          <div class="card flat"><div class="eyebrow">PROXIMAL OUTCOME</div><h3>起身响应</h3><div class="metric" id="response-rate">—<small> today</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">接受提醒后 15 分钟内是否站起</p></div>
-          <div class="card flat"><div class="eyebrow">BURDEN</div><h3>今日打扰</h3><div class="metric"><span id="burden-count">0</span><small> / 3</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">达到上限后不再主动提醒</p></div>
-          <div class="card flat"><div class="eyebrow">DIGITAL TWIN</div><h3>个体模型状态</h3><div class="metric" style="font-size:26px" id="twin-status">探索期</div><p class="muted" style="font-size:12px;margin:4px 0 0">先收集偏好，再逐步适配</p></div>
+          <div class="card flat"><div class="eyebrow">起身情况</div><h3>提醒后有没有起身</h3><div class="metric" id="response-rate">—<small> 今天</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">提醒后 15 分钟内是否站起</p></div>
+          <div class="card flat"><div class="eyebrow">提醒次数</div><h3>今天提醒了几次</h3><div class="metric"><span id="burden-count">0</span><small> / 3</small></div><p class="muted" style="font-size:12px;margin:4px 0 0">达到上限后，今天不再主动提醒</p></div>
+          <div class="card flat"><div class="eyebrow">今天的记录</div><h3>我们还在了解你的习惯</h3><div class="metric" style="font-size:26px" id="twin-status">刚开始</div><p class="muted" style="font-size:12px;margin:4px 0 0">会根据你的反馈慢慢调整</p></div>
         </div>
       </section>
 
@@ -258,16 +258,16 @@
       </section>
 
       <section id="tab-intervention" class="tab">
-        <div class="section-head"><div><div class="eyebrow">JUST-IN-TIME ADAPTIVE INTERVENTION</div><h2>现在要不要动？由你和安全层共同决定</h2><p>模型可以排序候选任务，但不能绕过安全层，也不能改变任务的强度和时长边界。</p></div><div class="research-code">max 3 decisions / workday</div></div>
+        <div class="section-head"><div><div class="eyebrow">现在可以做什么</div><h2>要不要现在活动一下？</h2><p>你可以选一个轻松的动作，也可以先延后。今天的身体感觉比过去的训练成绩更重要。</p></div><div class="research-code">每天最多 3 次</div></div>
         <div class="grid two">
-          <div class="card"><div class="eyebrow">CURRENT OPPORTUNITY</div><h2 id="intervention-title">还没有新的干预窗口</h2><div id="intervention-alert" class="alert green">模拟坐姿达到 60 分钟后，这里会出现候选任务。</div><div id="athlete-mode-alert" class="profile-tip" style="margin-top:14px">运动员模式：任务排序会参考你的专项、身体关注信息和当前转型阶段；不会因为曾经是运动员就自动提高强度。</div><div class="choice-grid" id="task-grid">
+          <div class="card"><div class="eyebrow">现在可以做什么</div><h2 id="intervention-title">还没有需要你决定的事</h2><div id="intervention-alert" class="alert green">模拟再坐 20 分钟后，这里会出现几个轻松的选择。</div><div id="athlete-mode-alert" class="profile-tip" style="margin-top:14px">你的运动经历会帮助我们选更合适的提示；今天做多少，以你现在的感觉为准。</div><div class="choice-grid" id="task-grid">
             <button class="choice task" data-task="B2-WALK"><strong>B2-WALK · 2 分钟走动</strong><small>低负荷、优先推荐；适合状态稳定时</small></button>
             <button class="choice task" data-task="B2-STS"><strong>B2-STS · 坐站转换</strong><small>短时、无需离开工位；需无急性下肢不适</small></button>
             <button class="choice task" data-task="B2-MOB"><strong>B2-MOB · 关节活动</strong><small>在原地完成；适合步行意愿较低时</small></button>
             <button class="choice task" data-task="ATHENA-RESET"><strong>ATHENA-RESET · 赛后恢复式 2 分钟</strong><small>把起身当作“下一组恢复”，表达更像运动员熟悉的节奏</small></button>
             <button class="choice task" data-task="DEFER20"><strong>DEFER20 · 延后 20 分钟</strong><small>记录一次拒绝/延后，不追问、不施压</small></button>
           </div><div class="btn-row" style="margin-top:16px"><button class="btn primary" id="deliver-task" disabled>确认当前选择</button><button class="btn" id="decline-task">暂不需要</button></div></div>
-          <div class="card"><div class="eyebrow">WHY THIS TASK</div><h3>系统只解释可审计的原因</h3><div class="timeline" id="reasoning-list"><div class="timeline-item"><time>01</time><span class="pin"></span><p><strong>安全层</strong><br><small>先检查红旗症状、疼痛、疲劳和今日打扰次数</small></p></div><div class="timeline-item"><time>02</time><span class="pin"></span><p><strong>个体状态</strong><br><small>参考近期完成率、拒绝负担和当前坐姿时长</small></p></div><div class="timeline-item"><time>03</time><span class="pin"></span><p><strong>候选任务</strong><br><small>从固定任务库选择，不由 LLM 创造新的运动处方</small></p></div></div><div class="alert amber" style="margin-top:20px">语言模型只能把已批准的任务改写成更自然的提示，不能诊断、加量、延长时长或修改安全边界。</div></div>
+          <div class="card"><div class="eyebrow">为什么会看到这些</div><h3>我们只给你几个简单选择</h3><div class="timeline" id="reasoning-list"><div class="timeline-item"><time>01</time><span class="pin"></span><p><strong>先看今天的感觉</strong><br><small>会留意你的疲劳、疼痛和有没有不舒服</small></p></div><div class="timeline-item"><time>02</time><span class="pin"></span><p><strong>再看最近的习惯</strong><br><small>如果你最近常常延后，也不会反复催你</small></p></div><div class="timeline-item"><time>03</time><span class="pin"></span><p><strong>只从固定动作里挑</strong><br><small>不会临时给你增加强度、时间或新的动作</small></p></div></div><div class="alert amber" style="margin-top:20px">这些提示只是帮助你做选择，不是诊断，也不是运动处方。觉得不舒服时，随时停下来。</div></div>
         </div>
       </section>
 
@@ -302,9 +302,9 @@
       const updateAthleteSummary = () => {
         const a=state.athlete, gap=Math.max(0, Number(a.pastTraining)-Number(a.currentActivity)), focus=focusAreaLabel(a.injury), sportLabel=a.sportDetail ? `${a.sport} · ${a.sportDetail}` : a.sport;
         $('athlete-sport-stat').textContent=sportLabel; $('athlete-stage-stat').textContent=stageLabel(a.stage); $('athlete-injury-stat').textContent=focus; $('athlete-gap-stat').textContent=gap+' h / 周';
-        $('athlete-greeting').textContent = a.sport==='耐力/户外' ? '把耐力训练的节奏感，迁移到退役后的工作日' : a.sport==='力量/举重' ? '保留力量型运动员的掌控感，但不把过去的强度带进今天' : '把“训练节奏”翻译成“生活节奏”';
-        $('athlete-summary').textContent = `你是${sportLabel}专项，已离开系统训练 ${stageLabel(a.stage)}；你希望先${goalLabel(a.goal)}。${focus==='暂不设置'?'如果你愿意，之后可以再补充身体关注信息。':`当前自报需要留意“${focus}”。`} ATHENA 不把过去成绩当作今天的运动许可。`;
-        $('athlete-mode-alert').textContent = `运动员模式：当前为${sportLabel}专项，已离开系统训练 ${stageLabel(a.stage)}；目标是${goalLabel(a.goal)}。${focus==='暂不设置'?'尚未设置身体关注区域，系统会先保持低负荷候选。':`当前自报需要留意“${focus}”，系统会据此暂时收窄候选任务。`} 不因曾经是运动员就自动提高强度。`;
+        $('athlete-greeting').textContent = a.sport==='耐力/户外' ? '以前常做耐力运动，今天先把节奏放回生活里' : a.sport==='力量/举重' ? '以前习惯高强度，今天先按现在的感觉来' : '把过去的训练习惯，慢慢带回日常';
+        $('athlete-summary').textContent = `你以前练${sportLabel}，已经离开系统训练 ${stageLabel(a.stage)}。今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'身体关注区域还没有填写。':`最近你提到“${focus}”需要少一点负担。`} 今天怎么动，以你现在的感觉为准。`;
+        $('athlete-mode-alert').textContent = `你以前练${sportLabel}，已离开系统训练 ${stageLabel(a.stage)}；今天先${goalLabel(a.goal)}。${focus==='暂不设置'?'你还没有填写身体关注区域，我们先从轻松的动作开始。':`你提到“${focus}”需要少一点负担，我们会先避开不合适的选择。`} 不会因为你曾经是运动员，就让今天的动作变得更难。`;
       };
       const applyTaskGuardrails = () => {
         const lower = ['knee-leg','ankle-foot'].includes(normalizeFocusArea(state.athlete.injury));
@@ -318,18 +318,18 @@
         if (red) score = Math.min(score, 20); if (!state.testCompleted) score -= 4; return Math.max(0, Math.min(100, score));
       };
       const updateReadiness = () => {
-        const score = readiness(); $('readiness-value').innerHTML = score + '<small>/100 readiness</small>'; $('ring-value').textContent=score; $('readiness-ring').style.setProperty('--readiness', score+'%');
+        const score = readiness(); $('readiness-value').innerHTML = score + '<small>/100</small>'; $('ring-value').textContent=score; $('readiness-ring').style.setProperty('--readiness', score+'%');
         $('fatigue-out').textContent=$('fatigue').value+' / 10'; $('pain-out').textContent=$('pain').value+' / 10'; $('resting-hr-out').textContent=$('resting-hr').value+' bpm';
-        const label = score >= 70 ? '适合低负荷微活动' : score >= 45 ? '建议减量并观察反馈' : '暂停主动干预，先复核安全'; $('readiness-label').textContent=label;
-        $('system-status').textContent = Object.values(state.symptoms).some(Boolean) ? '安全层已暂停主动干预' : '安全层在线 · 规则优先'; $('system-dot').style.background = score < 45 ? 'var(--red)' : score < 70 ? 'var(--amber)' : 'var(--green)';
-        const risk = $('decision-alert'); if (Object.values(state.symptoms).some(Boolean) || score < 45) { risk.className='alert red'; risk.textContent='安全层已暂停主动干预。请停止自测，必要时联系专业人员；模型和语言生成均不能覆盖这一决定。'; } else if(score < 70) { risk.className='alert amber'; risk.textContent='状态偏低：只保留低负荷、短时、可随时停止的选项；系统不会主动升级强度。'; } else { risk.className='alert green'; risk.textContent='系统当前不会打扰你。你可以继续工作，或者主动进入身体检查。'; }
+        const label = score >= 70 ? '适合低负荷微活动' : score >= 45 ? '今天可以少一点、慢一点' : '先停一下，看看是否需要帮助'; $('readiness-label').textContent=label;
+        const hasSymptom = Object.values(state.symptoms).some(Boolean); $('system-status').textContent = hasSymptom ? '先停下来，做个检查' : score < 45 ? '今天先缓一缓' : score < 70 ? '今天可以慢一点' : '今天可以按自己的节奏来'; $('system-dot').style.background = score < 45 ? 'var(--red)' : score < 70 ? 'var(--amber)' : 'var(--green)';
+        const risk = $('decision-alert'); if (hasSymptom || score < 45) { risk.className='alert red'; risk.textContent='先不要继续自测。停下来，如果不舒服或拿不准，请联系专业人员。'; } else if(score < 70) { risk.className='alert amber'; risk.textContent='今天先选短一点、轻一点、随时能停下来的活动。'; } else { risk.className='alert green'; risk.textContent='现在不用急着动。你可以继续工作，也可以自己先做个检查。'; }
       };
       const renderLog = () => { $('event-log').innerHTML = state.events.slice().reverse().map(e=>`<tr><td>${e.time}</td><td>${e.event}</td><td>${e.action}</td><td class="status ${e.tone}">${e.result}</td></tr>`).join(''); };
-      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','用少量状态信号和用户反馈，让每一次久坐中断都更合适、更可解释，也更容易坚持。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['现在要不要动？由你和安全层共同决定','模型可以排序候选任务，但不能绕过安全层，也不能改变任务的强度和时长边界。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
+      const setTab = (name) => { state.tab=name; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name)); document.querySelectorAll('.nav-btn').forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===name))); const titles={today:['今天，先了解身体，再决定动多少。','先看看今天的疲劳、疼痛和坐了多久，再决定要不要起身。'],athlete:['先从你的运动经历和今天的需要开始','专项、退役阶段、身体感受、生活目标和训练节奏共同构成 ATHENA 的运动员专属画像。'],check:['先筛查，再考虑“动多少”','把“极限测试”改成安全的入场筛查和低负荷耐受检查。'],intervention:['要不要现在活动一下？','你可以选一个轻松的动作，也可以先延后；今天的身体感觉比过去的训练成绩更重要。'],research:['把体验变成可复核的研究数据','每一次决策都留下状态、策略、任务和反馈的完整轨迹。']}; $('page-title').textContent=titles[name][0]; $('page-subtitle').textContent=titles[name][1]; };
       document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTab(btn.dataset.tab)));
       ['fatigue','pain','resting-hr'].forEach(id=>$(id).addEventListener('input', updateReadiness));
       $('open-check').addEventListener('click',()=>setTab('check'));
-      $('simulate-sit').addEventListener('click',()=>{ state.sitMinutes+=20; $('sit-minutes').innerHTML=state.sitMinutes+'<small> min</small>'; const ready=readiness(); if(state.sitMinutes>=60 && state.burden<3 && !Object.values(state.symptoms).some(Boolean)){ $('decision-title').textContent='出现一个低负担决策点'; $('decision-copy').textContent='你已连续坐姿 '+state.sitMinutes+' 分钟。现在可以选择一项短任务，或明确延后。'; $('intervention-title').textContent='建议：先做运动员专属恢复微循环'; $('intervention-alert').className='alert '+(ready<70?'amber':'green'); $('intervention-alert').textContent=ready<70?'状态偏低，建议只选择可以随时停止的动作。':'状态稳定，系统开放固定任务；当前身体关注信息已参与排序。'; setTab('intervention'); appendEvent('坐姿触发','trigger: sitting>=60m','待选择','warn'); } else { $('decision-copy').textContent='当前连续坐姿 '+state.sitMinutes+' 分钟。'; toast(state.sitMinutes>=60?'安全层暂不开放主动任务。请先完成身体检查。':'还差 '+(60-state.sitMinutes)+' 分钟进入提醒窗口。'); appendEvent('坐姿更新','sitting='+state.sitMinutes+'m','未触发','good'); } });
+      $('simulate-sit').addEventListener('click',()=>{ state.sitMinutes+=20; $('sit-minutes').innerHTML=state.sitMinutes+'<small> 分钟</small>'; const ready=readiness(); if(state.sitMinutes>=60 && state.burden<3 && !Object.values(state.symptoms).some(Boolean)){ $('decision-title').textContent='要不要起来活动一下？'; $('decision-copy').textContent='你已经坐了 '+state.sitMinutes+' 分钟。选一个轻松的动作，或者先延后都可以。'; $('intervention-title').textContent='可以先起来活动两分钟'; $('intervention-alert').className='alert '+(ready<70?'amber':'green'); $('intervention-alert').textContent=ready<70?'今天感觉有点累，先选能随时停下来的动作。':'状态还可以，挑一个你愿意做的就好。'; setTab('intervention'); appendEvent('坐姿触发','trigger: sitting>=60m','待选择','warn'); } else { $('decision-copy').textContent='现在已经坐了 '+state.sitMinutes+' 分钟。'; toast(state.sitMinutes>=60?'今天先做个检查，再决定要不要活动。':'还差 '+(60-state.sitMinutes)+' 分钟，才会出现一次提醒。'); appendEvent('坐姿更新','sitting='+state.sitMinutes+'m','未触发','good'); } });
       document.querySelectorAll('.symptom').forEach(btn=>btn.addEventListener('click',()=>{ const key=btn.dataset.key; state.symptoms[key]=!state.symptoms[key]; btn.classList.toggle('selected',state.symptoms[key]); btn.setAttribute('aria-pressed',String(state.symptoms[key])); const active=Object.values(state.symptoms).some(Boolean); const alert=$('screening-alert'); alert.className='alert '+(active?'red':'green'); alert.textContent=active?'发现红旗症状：不要继续耐受检查或主动干预，请联系专业人员。':'目前没有勾选红旗症状。仅代表“可以继续完成筛查”，不代表获得医疗许可。'; updateReadiness(); appendEvent('症状筛查',key,active?'暂停并升级':'未见红旗',''+(active?'stop':'good')); }));
       $('test-hr').addEventListener('input',()=> $('test-hr-out').textContent=$('test-hr').value+' bpm'); $('test-rpe').addEventListener('input',()=> $('test-rpe-out').textContent=$('test-rpe').value+' / 10');
       $('run-test').addEventListener('click',()=>{ const active=Object.values(state.symptoms).some(Boolean), rpe=Number($('test-rpe').value), hr=Number($('test-hr').value); if(active){ $('test-tier').textContent='暂停'; $('test-recommendation').textContent='联系专业人员'; $('test-permission').textContent='禁止干预'; $('test-tier').style.color='var(--red)'; appendEvent('耐受检查','submax check','未执行','stop'); toast('安全层阻止了检查：请先处理筛查结果。'); return; } state.testCompleted=true; const low=rpe<=4 && hr<=135; state.testTier=low?'绿区':'黄区'; $('test-tier').textContent=state.testTier; $('test-recommendation').textContent=low?'可考虑低负荷':'减量并观察'; $('test-permission').textContent=low?'开放候选任务':'仅低负荷'; $('test-tier').style.color=low?'var(--green)':'var(--amber)'; updateReadiness(); appendEvent('耐受检查','3-min submax','完成 · '+state.testTier,low?'good':'warn'); toast('检查结果已记录。正式研究请由专业人员确认阈值与设备质量要求。'); });
