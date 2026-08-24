@@ -1,0 +1,13 @@
+{
+  "name": "athena-interactive-mvp",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ATHENA dynamic MVP for retired athletes",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
